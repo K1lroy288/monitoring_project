@@ -16,7 +16,7 @@ var (
 			Name: "http_requests_total",
 			Help: "Total number of HTTP requests to monitoring project",
 		},
-		[]string{"path"},
+		[]string{"method", "path", "status"},
 	)
 
 	cpuLoaded = prometheus.NewGauge(
@@ -55,7 +55,7 @@ func main() {
 		w.Write([]byte("Service is up!"))
 
 		duration := time.Since(start).Seconds()
-		httpRequestsTotal.WithLabelValues(r.URL.Path).Inc()
+		httpRequestsTotal.WithLabelValues(r.Method, r.URL.Path, "200").Inc()
 		httpRequestDuration.WithLabelValues(r.URL.Path).Observe(duration)
 	})
 
@@ -67,7 +67,7 @@ func main() {
 		time.Sleep(500 * time.Millisecond)
 
 		duration := time.Since(start).Seconds()
-		httpRequestsTotal.WithLabelValues(r.URL.Path).Inc()
+		httpRequestsTotal.WithLabelValues(r.Method, r.URL.Path, "200").Inc()
 		httpRequestDuration.WithLabelValues(r.URL.Path).Observe(duration)
 	})
 
