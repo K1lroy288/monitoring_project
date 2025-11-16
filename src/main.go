@@ -10,18 +10,28 @@ import (
 	"github.com/shirou/gopsutil/v3/cpu"
 )
 
-var httpRequestsTotal = prometheus.NewCounterVec(
-	prometheus.CounterOpts{
-		Name: "http_requests_total",
-		Help: "Total number of HTTP requests to monitoring project",
-	},
-	[]string{"path"},
-)
+var (
+	httpRequestsTotal = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_requests_total",
+			Help: "Total number of HTTP requests to monitoring project",
+		},
+		[]string{"path"},
+	)
 
-var cpuLoaded = prometheus.NewGauge(
-	prometheus.GaugeOpts{
-		Name: "CPU_loaded",
-	},
+	cpuLoaded = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "CPU_loaded",
+		},
+	)
+
+	httpRequestDuration = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name: "http_request_duration_seconds",
+			Help: "Request duration in seconds",
+		},
+		[]string{"path"},
+	)
 )
 
 func cpuLoad(cpuL prometheus.Gauge) {
@@ -37,11 +47,28 @@ func cpuLoad(cpuL prometheus.Gauge) {
 }
 
 func main() {
-	prometheus.MustRegister(httpRequestsTotal, cpuLoaded)
+	prometheus.MustRegister(httpRequestsTotal, cpuLoaded, httpRequestDuration)
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		httpRequestsTotal.WithLabelValues(r.URL.Path).Inc()
+		start := time.Now()
+
 		w.Write([]byte("Service is up!"))
+
+		duration := time.Since(start).Seconds()
+		httpRequestsTotal.WithLabelValues(r.URL.Path).Inc()
+		httpRequestDuration.WithLabelValues(r.URL.Path).Observe(duration)
+	})
+
+	http.HandleFunc("/custom_duration", func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		w.Write([]byte("Custom duration endpoint!"))
+
+		time.Sleep(500 * time.Millisecond)
+
+		duration := time.Since(start).Seconds()
+		httpRequestsTotal.WithLabelValues(r.URL.Path).Inc()
+		httpRequestDuration.WithLabelValues(r.URL.Path).Observe(duration)
 	})
 
 	go cpuLoad(cpuLoaded)
