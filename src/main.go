@@ -27,10 +27,11 @@ var (
 
 	httpRequestDuration = prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
-			Name: "http_request_duration_seconds",
-			Help: "Request duration in seconds",
+			Name:    "http_request_duration_seconds",
+			Help:    "Request duration in seconds",
+			Buckets: []float64{0.01, 0.05, 0.1, 0.5, 1, 5},
 		},
-		[]string{"path"},
+		[]string{"method", "path"},
 	)
 )
 
@@ -56,7 +57,7 @@ func main() {
 
 		duration := time.Since(start).Seconds()
 		httpRequestsTotal.WithLabelValues(r.Method, r.URL.Path, "200").Inc()
-		httpRequestDuration.WithLabelValues(r.URL.Path).Observe(duration)
+		httpRequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(duration)
 	})
 
 	http.HandleFunc("/custom_duration", func(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +69,7 @@ func main() {
 
 		duration := time.Since(start).Seconds()
 		httpRequestsTotal.WithLabelValues(r.Method, r.URL.Path, "200").Inc()
-		httpRequestDuration.WithLabelValues(r.URL.Path).Observe(duration)
+		httpRequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(duration)
 	})
 
 	go cpuLoad(cpuLoaded)
