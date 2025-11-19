@@ -1,0 +1,38 @@
+services:
+  backend:
+    image: monitoring_service
+    build:
+      context: ./src
+    ports:
+      - "3425:3425"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3425/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command: 
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    healthcheck:
+      test: ["CMD-SHELL", "wget -O- http://localhost:9090/metrics || exit 1"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      backend: 
+        condition: service_healthy
+    
+  grafana:
+    image: grafana/grafana-enterprise
+    ports:
+      - "3000:3000"
+    depends_on:
+      prometheus:
+        condition: service_healthy
