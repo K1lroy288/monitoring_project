@@ -1,51 +1,59 @@
 services:
   backend:
-    image: monitoring_service
+    image: monitoring_service:${TAG:-latest}
     build:
       context: ./src
+      dockerfile: Dockerfile
     ports:
       - "3425:3425"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3425/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3425/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
-    networks:
-      - default
+      retries: 3
+      start_period: 10s
+    environment:
+      - LOG_LEVEL=info
+    restart: unless-stopped
     
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v3.7.3
+    user: "root"
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus/data
     command: 
       - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus/data
     healthcheck:
-      test: ["CMD-SHELL", "wget -O- http://localhost:9090/metrics || exit 1"]
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/healthy || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     depends_on:
       backend: 
-        condition: service_healthy
-    networks:
-      - default
+        condition: service_started
+    restart: unless-stopped
     
   grafana:
-    image: grafana/grafana-enterprise
+    image: grafana/grafana:12.1
+    user: "root"
     ports:
       - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
     depends_on:
       prometheus:
         condition: service_healthy
-    networks:
-      - default
-      
-networks:
-  default:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.28.0.0/16
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+  grafana_data:

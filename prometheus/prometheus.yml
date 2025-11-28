@@ -1,7 +1,21 @@
 global:
   scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'monitoring-service'
 
 scrape_configs:
-  - job_name: 'monitoring_service'
+  - job_name: 'backend'
+    metrics_path: /metrics
+    scheme: http
     static_configs:
-      - targets: ['172.28.0.1:3425']
+      - targets: ['backend:3425']
+        labels:
+          service: 'backend'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 15s
