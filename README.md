@@ -150,20 +150,8 @@ While this project demonstrates core monitoring concepts, a production deploymen
 - **Health Checks**: Implement comprehensive liveness and readiness probes
 - **Backup & Recovery**: Set up backup strategies for Prometheus and Grafana data
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
 ## 📞 Contact
 
-Your Name - your.email@example.com
+Your Name - k1lroyd@mail.ru
 
 Project Link: [https://github.com/yourusername/monitoring_project](https://github.com/yourusername/monitoring_project)
