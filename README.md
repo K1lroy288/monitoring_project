@@ -143,6 +143,6 @@ The project uses multi-service Docker Compose with the following services:
 
 ## 📞 Contact
 
-Your Name - k1lroyd@mail.ru
+Denis - k1lroyd@mail.ru
 
 Project Link: [https://github.com/K1lroy288/monitoring_project](https://github.com/K1lroy288/monitoring_project)
