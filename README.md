@@ -154,4 +154,4 @@ While this project demonstrates core monitoring concepts, a production deploymen
 
 Your Name - k1lroyd@mail.ru
 
-Project Link: [https://github.com/yourusername/monitoring_project](https://github.com/K1lro288/monitoring_project)
+Project Link: [https://github.com/K1lroy288/monitoring_project](https://github.com/K1lro288/monitoring_project)
