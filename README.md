@@ -65,8 +65,6 @@ The application demonstrates proper metric labeling and the use of different met
    ```bash
    git clone https://github.com/K1lroy288/monitoring_project
    cd monitoring_project
-   mkdir ./prometheus/data
-   sudo chown -R 65534:65534 ./prometheus/data
    ```
 
 2. Create data directory for prometheus:
