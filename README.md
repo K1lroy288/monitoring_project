@@ -1,7 +1,3 @@
---- README.md
-
-
-+++ README.md 
 # Monitoring Project
 
 A comprehensive monitoring solution built with Go, Prometheus, and Grafana to demonstrate modern observability practices. This project showcases a complete monitoring stack with custom metrics collection, visualization, and system monitoring capabilities.
