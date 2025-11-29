@@ -65,9 +65,17 @@ The application demonstrates proper metric labeling and the use of different met
    ```bash
    git clone <repository-url>
    cd monitoring_project
+   mkdir ./prometheus/data
+   sudo chown -R 65534:65534 ./prometheus/data
    ```
 
-2. Build and start the services:
+2. Create data directory for prometheus:
+   ```bash
+   mkdir ./prometheus/data
+   sudo chown -R 65534:65534 ./prometheus/data
+   ```
+
+3. Build and start the services:
    ```bash
    docker-compose up --build
    ```
