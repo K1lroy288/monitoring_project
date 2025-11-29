@@ -1,0 +1,7 @@
+# Prometheus TSDB data
+/prometheus/data/
+
+# Опционально: если используете IDE
+.idea/
+.vscode/
+*.swp

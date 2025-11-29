@@ -18,12 +18,12 @@ services:
     
   prometheus:
     image: prom/prometheus:v3.7.3
-    user: "root"
+    user: "65534"
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus_data:/prometheus/data
+      - ./prometheus/data:/prometheus/data
     command: 
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus/data
@@ -55,7 +55,6 @@ services:
 
   grafana:
     image: grafana/grafana:12.1
-    user: "root"
     ports:
       - "3000:3000"
     environment:
@@ -63,12 +62,11 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro
     depends_on:
       prometheus:
         condition: service_healthy
     restart: unless-stopped
 
 volumes:
-  prometheus_data:
   grafana_data:
