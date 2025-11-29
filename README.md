@@ -135,21 +135,6 @@ The project uses multi-service Docker Compose with the following services:
 - **grafana**: Visualization and dashboarding
 - **node-exporter**: System metrics collection
 
-## 🚨 Production Considerations
-
-While this project demonstrates core monitoring concepts, a production deployment would require additional considerations:
-
-- **Security**: Currently, containers run as root users and Grafana uses a hardcoded password. Production setup should use non-root users and proper secret management
-- **Authentication**: Implement proper authentication and authorization mechanisms
-- **Alerting**: Configure Prometheus alerting rules and integrate with notification systems
-- **Logging**: Implement structured logging with centralized log aggregation
-- **Monitoring**: Monitor the monitoring stack itself (blackbox exporter, etc.)
-- **TLS**: Enable HTTPS/TLS for secure communication between services
-- **Configuration**: Use environment variables and configuration files for flexible deployment
-- **Resource Management**: Define resource limits and requests for containers
-- **Health Checks**: Implement comprehensive liveness and readiness probes
-- **Backup & Recovery**: Set up backup strategies for Prometheus and Grafana data
-
 ## 📞 Contact
 
 Your Name - k1lroyd@mail.ru
